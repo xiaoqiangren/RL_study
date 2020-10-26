@@ -96,16 +96,16 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
 log_dir = "pp02_logger/"
 os.makedirs(log_dir, exist_ok=True)
 
-# Create and wrap the environment
+# Create and wrap the environment 创建并包装环境
 env = gym.make("overtaking-v0")
 env = Monitor(env, log_dir)
 
 # print("the action dimension:{}".format(env.action_space.shape[-1]))
-# print(env.observation_space)
+print(env.observation_space)
 
 # it will check your custom environment and output additional warning if needed
 check_env(env)
-#env = VecCheckNan(env, raise_exception=True)
+env = VecCheckNan(env, raise_exception=True)
 
 # quick check with random actions on the env.
 # do this whenever a new environment is add on.
@@ -117,7 +117,7 @@ for _ in range(n_steps):
     action = env.action_type.actions_indexes["IDLE"]
     # obs, reward, done, info = env.step(action)
     # print(action)
-    obs, reward, done, infos = env.step(action)
+    obs, reward, done, info = env.step(action)
     print("the reward we received:{}".format(reward))
     print("the action we received:{}".format(action))
 
@@ -125,21 +125,21 @@ for _ in range(n_steps):
 #                  max_grad_norm=0.5, lam=0.95, nminibatches=4, noptepochs=4, cliprange=0.2, cliprange_vf=None,
 #                  verbose=0, tensorboard_log=None, _init_setup_model=True, policy_kwargs=None,
 #                  full_tensorboard_log=False, seed=None, n_cpu_tf_sess=None):
-model = PPO2(CustomPolicy, env, gamma=0.9, learning_rate=0.0086, nminibatches=64,
-             verbose=1, tensorboard_log="./ppo2_filiter_tensorboard/")
+model = PPO2(MlpPolicy, env, gamma=0.9, learning_rate=0.0086, nminibatches=64,
+             verbose=1, tensorboard_log="./ppo2_filter_tensorboard/")
 
-callback = SaveOnBestTrainingRewardCallback(check_freq=40,log_dir=log_dir)
+callback = SaveOnBestTrainingRewardCallback(check_freq=40, log_dir=log_dir)
 time_steps = 3e4
 
 start_time = time.time()
-model.learn(total_timesteps=int(time_steps),callback=callback)
+model.learn(total_timesteps=int(time_steps), callback=callback)
 "---%s seconds ---" % (time.time() - start_time)
 
 # save the last model
-model.save("ppo2_lastmodel")
+model.save("ppo2_LastModel")
 
 
-results_plotter.plot_results([log_dir],time_steps,results_plotter.X_TIMESTEPS,"PPO2 LunarLander")
+results_plotter.plot_results([log_dir], time_steps, results_plotter.X_TIMESTEPS, "PPO2 LunarLander")
 plt.show()
 
 
