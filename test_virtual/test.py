@@ -1,6 +1,6 @@
 # from stable_baselines import PPO2
 # import highway_env
-# model = PPO2('MlpPolicy','overtaking-vo').learning(1000)
+# model = PPO2('MlpPolicy','overtaking-v0').learn(100)
 
 import gym
 import highway_env
