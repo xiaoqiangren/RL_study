@@ -69,7 +69,7 @@ class SaveOnBestTrainingRewardCallback(BaseCallback):
 
 
 # create log dir
-log_dir = "DqnOvertaking_tmp/"
+log_dir = "test_results/DqnOvertaking/" + TIMESTAMP
 os.makedirs(log_dir, exist_ok=True)
 
 # Create and wrap the environment
@@ -79,11 +79,11 @@ env = Monitor(env, log_dir)
 # Instantiate the agent
 # model = DQN(EgoAttentionNetwork, env, learning_rate=1e-3, prioritized_replay=True, verbose=1)
 model = DQN("MlpPolicy", env, learning_rate=1e-3, prioritized_replay=True, verbose=1,
-            tensorboard_log="./DQN_overtaking_tensorboard/")
+            tensorboard_log="./test_results/DQN_overtaking_tensorboard/" + TIMESTAMP)
 # create the callback: check every 1000 steps
 callback = SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_dir)
 # Train the agent
-time_steps = 1e5
+time_steps = 1000
 model.learn(total_timesteps=int(time_steps), callback=callback)
 
 results_plotter.plot_results([log_dir], time_steps, results_plotter.X_TIMESTEPS, "DQN OvertakingEnv")
